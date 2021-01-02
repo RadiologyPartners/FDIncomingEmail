@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>global.FlowIncomingEmail</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>FlowIncomingEmail</name>
+        <script><![CDATA[var FlowIncomingEmail = Class.create();
+FlowIncomingEmail.prototype = {
+
+    initialize: function(email) {
+        this.email = email;
+        this.variables = this._parseVariables();
+    },
+
+
+
+
+
+
+
+
+
+
+
+    //  ################################################################################
+    //  #   _getAssignmentLookup - iterate data lookup records trying to match
+    //  #                          recipients to determine correct assignment
+    //  #                          information; if no match is found, returns the
+    //  #                          assignment information from the last record
+    //  #                          read (sorted by order) as the default
+    //  ################################################################################
+    _getAssignmentLookup: function() {
+        var toList = this._splitCSV(this.email, 'recipients');
+        var gr = new GlideRecord('u_dl_email_assignment');
+        var dlList, lookup, x;
+
+        gr.addActiveQuery();
+        gr.orderBy('order');
+        gr.orderBy('u_recipient');
+        gr.query();
+        while (gr.next() && !lookup) {
+            dlList = this._splitCSV(gr, 'u_recipient');
+            for (x = 0; x < dlList.length; x++) {
+                if (toList.indexOf(dlList[x]) >= 0 || !gr.hasNext()) {
+                    lookup = {
+                        match: gr.getUniqueValue(),
+                        match_email: dlList[x],
+                        group: gr.getValue('u_assignment_group'),
+                        group_display: gr.getElement('u_assignment_group').getDisplayValue(),
+                        user: gr.getValue('u_assigned_to'),
+                        user_display: gr.getElement('u_assigned_to').getDisplayValue()
+                    };
+                    break;
+                }
+            }
+        }
+        return lookup;
+    },
+
+    //  ################################################################################
+    //  #   _getUser - search for user by searching the following fields, in order:
+    //  #                 * sys_id
+    //  #                 * user_name
+    //  #                 * u_samaccountname
+    //  #                 * u_employee_id
+    //  #                 * employee_number
+    //  #                 * email
+    //  #                 * name
+    //  ################################################################################
+    _getUser: function(search) {
+        var grUser = new GlideRecord('sys_user');
+        var fieldList = [
+            'sys_id',
+            'user_name',
+            'u_samaccountname',
+            'u_employee_id',
+            'employee_number',
+            'email',
+            'name'
+        ];
+        var user = {};
+        var x;
+
+        user.found = false;
+        for (x = 0; x < fieldList.length; x++) {
+            grUser.initialize();
+            if (grUser.isValidField(fieldList[x])) {
+                grUser.addEncodedQuery(fieldList[x] + '=' + search + '^active=true');
+                grUser.query();
+                if (grUser.next() && !grUser.hasNext()) {
+                    user.found = true;
+                    break;
+                }
+            }
+        }
+        //  if we found a user, include any desired values in returned object
+        if (user.found) {
+            user.id = grUser.getUniqueValue();
+            user.company = grUser.getValue('company');
+            user.location = grUser.getValue('location');
+            user.user_name = grUser.getValue('user_name');
+        }
+        return user;
+    },
+
+    //  ################################################################################
+    //  #   _isEmail - return boolean indicating if given text is an email address
+    //  ################################################################################
+    _isEmail: function(text) {
+        return /^[a-z0-9._%+-]{1,64}@(?:[a-z0-9-]{1,63}\.){1,8}[a-z]{2,63}$/i.test(text);
+    },
+
+    //  ################################################################################
+    //  #   _isNumeric - return boolean indicating if given text is numeric
+    //  ################################################################################
+    _isNumeric: function(text) {
+        var numeric = false;
+        var work;
+
+        if (text) {
+            work = Number(text);
+            numeric = !isNaN(work);
+        }
+        return numeric;
+    },
+
+    //  ################################################################################
+    //  #   _isSysId - return boolean indicating if given text is a sys_id value
+    //  ################################################################################
+    _isSysId: function(text) {
+        return /^[0-9a-f]{32}$/.test(text);
+    },
+
+    //  ################################################################################
+    //  #  _parseVariables - parse email body for key:value pairs; keys are converted
+    //  #                    to lower case, and both keys and values are trimmed; only
+    //  #                    the first value of a key is returned, but when multiple
+    //  #                    values for the same key are found, an additional key with
+    //  #                    an '__list' suffix is created and will contain an array of
+    //  #                    of all values; key:value pairs must follow these rules:
+    //  #                       * appear on separate lines, at start of line
+    //  #                       * begin with letter, only contain [a-z0-9._-]
+    //  #                       * have minimum length of 2 characters
+    //  #                       * key may have trailing spaces before ':'
+    //  #                    an additional property of '__body' is also created that
+    //  #                    contains all other lines
+    //  ################################################################################
+    _parseVariables: function() {
+        var re = new RegExp('^([a-z][0-9a-z._-]+[ ]*):(.+)$', 'i');
+        var lines = this.email.getValue('body_text').split('\n');
+        var variables = {};
+        var key, key2, list, matches, value, x;
+
+		variables.__body = '';
+        for (x = 0; x < lines.length; x++) {
+            //  check line matching key:value pattern
+            if (re.test(lines[x])) {
+                //  get match values to split key and value
+                matches = lines[x].match(re);
+                key = matches[1].trim().toLowerCase();
+                value = matches[2].trim();
+                //  check to make sure we have a value
+                if (value) {
+                    //  if variable already exists add to list property for key;
+					//  otherwisde, add property for key and value
+                    if (variables.hasOwnProperty(key)) {
+                        key2 = key + '__list';
+                        list = (variables.hasOwnProperty(key2) ? variables[key2] : [variables[key]]);
+                        list.push(value);
+                        variables[key2] = list;
+                    } else {
+                        variables[key] = value;
+                    }
+                }
+            } else {
+                //  add unmatched lines to __body property, avoiding multiple blank lines
+                if (lines[x] || variables.__body.substr(-2) != '\n\n') {
+                    variables.__body += lines[x] + '\n';
+                }
+            }
+        }
+        return variables;
+    },
+
+    //  ################################################################################
+    //  #   _replaceLF - replace the liternal string '{lf}' in text with newline
+    //  ################################################################################
+    _replaceLF: function(text) {
+        return text.replace(/{lf}/gi, '\n');
+    },
+
+    //  ################################################################################
+    //  #   _splitCSV - split a comma-separated value string from a GlideRecord into
+    //  #               an array; trim each element, and optionally convert to
+    //  #               lowercase (default)
+    //  ################################################################################
+    _splitCSV: function(gr, field, lower) {
+        var list = gr.getValue(field).split(',');
+        var x;
+
+        for (x = 0; x < list.length; x++) {
+            list[x] = list[x].trim();
+            if (lower == undefined || lower) {
+                list[x] = list[x].toLowerCase();
+            }
+        }
+        return list;
+    },
+
+    type: 'FlowIncomingEmail'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-29 14:06:39</sys_created_on>
+        <sys_id>deac3f761b5d24104db032af034bcbc6</sys_id>
+        <sys_mod_count>33</sys_mod_count>
+        <sys_name>FlowIncomingEmail</sys_name>
+        <sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope>
+        <sys_update_name>sys_script_include_deac3f761b5d24104db032af034bcbc6</sys_update_name>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-29 21:56:22</sys_updated_on>
+    </sys_script_include>
+</record_update>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="dl_definition">
+    <dl_definition action="DELETE">
+        <active>true</active>
+        <matcher_table>u_dl_email_assignment</matcher_table>
+        <name>Inbound Email Assignment</name>
+        <run_on_form_change>false</run_on_form_change>
+        <run_on_insert>false</run_on_insert>
+        <run_on_update>false</run_on_update>
+        <source_table>sys_email</source_table>
+        <sys_class_name>dl_definition</sys_class_name>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-27 15:39:08</sys_created_on>
+        <sys_id>d67e715e1b9d6010b247ca2b234bcbbc</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Inbound Email Assignment</sys_name>
+        <sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope>
+        <sys_update_name>dl_definition_d67e715e1b9d6010b247ca2b234bcbbc</sys_update_name>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-27 15:39:08</sys_updated_on>
+    </dl_definition>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</application>
+        <file_path/>
+        <instance_id>76493423db1d54d0e26fd7c8f4961958</instance_id>
+        <instance_name>radbeta</instance_name>
+        <name>dl_definition_d67e715e1b9d6010b247ca2b234bcbbc</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="dl_definition"><dl_definition action="INSERT_OR_UPDATE"><active>true</active><matcher_table>u_dl_email_assignment</matcher_table><name>Inbound Email Assignment</name><run_on_form_change>false</run_on_form_change><run_on_insert>false</run_on_insert><run_on_update>false</run_on_update><source_table>sys_email</source_table><sys_class_name>dl_definition</sys_class_name><sys_created_by>byron.payton@admin</sys_created_by><sys_created_on>2020-12-27 15:39:08</sys_created_on><sys_id>d67e715e1b9d6010b247ca2b234bcbbc</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Inbound Email Assignment</sys_name><sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package><sys_policy/><sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope><sys_update_name>dl_definition_d67e715e1b9d6010b247ca2b234bcbbc</sys_update_name><sys_updated_by>byron.payton@admin</sys_updated_by><sys_updated_on>2020-12-27 15:39:08</sys_updated_on></dl_definition></record_update>]]></payload>
+        <payload_hash>-922317717</payload_hash>
+        <record_name>Inbound Email Assignment</record_name>
+        <reverted_from/>
+        <source>5887d1711bd160104db032af034bcb94</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-27 15:39:08</sys_created_on>
+        <sys_id>b8be359e1b9d6010b247ca2b234bcb68</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>176a4da73560000001</sys_recorded_at>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-27 15:39:08</sys_updated_on>
+        <type>Data Lookup Definitions</type>
+        <update_guid>b0be359e549d6010a902e38306cd2d68</update_guid>
+        <update_guid_history>b0be359e549d6010a902e38306cd2d68:-922317717</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="Inbound Email Assignment">68de759e1b9d6010b247ca2b234bcbeb</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-27 15:39:40</sys_created_on>
+        <sys_db_object display_value="" name="dl_definition">dl_definition</sys_db_object>
+        <sys_id>ba609f7887f648c0ae226fa383f450a9</sys_id>
+        <sys_metadata>d67e715e1b9d6010b247ca2b234bcbbc</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Inbound Email Assignment</sys_name>
+        <sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope>
+        <sys_scope_delete display_value="">2e7c715caf214bd792375629f1bf0d51</sys_scope_delete>
+        <sys_update_name>dl_definition_d67e715e1b9d6010b247ca2b234bcbbc</sys_update_name>
+        <sys_update_version display_value="dl_definition_d67e715e1b9d6010b247ca2b234bcbbc">b8be359e1b9d6010b247ca2b234bcb68</sys_update_version>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-27 15:39:40</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

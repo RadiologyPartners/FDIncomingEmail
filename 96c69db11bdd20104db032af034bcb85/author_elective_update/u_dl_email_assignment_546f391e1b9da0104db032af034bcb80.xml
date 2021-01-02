@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="u_dl_email_assignment">
+    <u_dl_email_assignment action="DELETE">
+        <active>true</active>
+        <order>9020</order>
+        <sys_class_name>u_dl_email_assignment</sys_class_name>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-27 15:42:20</sys_created_on>
+        <sys_id>546f391e1b9da0104db032af034bcb80</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>9020</sys_name>
+        <sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope>
+        <sys_update_name>u_dl_email_assignment_546f391e1b9da0104db032af034bcb80</sys_update_name>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-27 15:51:47</sys_updated_on>
+        <u_assigned_to/>
+        <u_assignment_group display_value="IT-SUPPORT-RP" name="IT-SUPPORT-RP">f6b3bfe7db17c810790cf158bf9619a6</u_assignment_group>
+        <u_recipient>workintake@radpartners.com</u_recipient>
+    </u_dl_email_assignment>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</application>
+        <file_path/>
+        <instance_id>76493423db1d54d0e26fd7c8f4961958</instance_id>
+        <instance_name>radbeta</instance_name>
+        <name>u_dl_email_assignment_546f391e1b9da0104db032af034bcb80</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="u_dl_email_assignment"><u_dl_email_assignment action="INSERT_OR_UPDATE"><active>true</active><order>9020</order><sys_class_name>u_dl_email_assignment</sys_class_name><sys_created_by>byron.payton@admin</sys_created_by><sys_created_on>2020-12-27 15:42:20</sys_created_on><sys_id>546f391e1b9da0104db032af034bcb80</sys_id><sys_mod_count>2</sys_mod_count><sys_name>9020</sys_name><sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package><sys_policy/><sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope><sys_update_name>u_dl_email_assignment_546f391e1b9da0104db032af034bcb80</sys_update_name><sys_updated_by>byron.payton@admin</sys_updated_by><sys_updated_on>2020-12-27 15:51:47</sys_updated_on><u_assigned_to/><u_assignment_group display_value="IT-SUPPORT-RP" name="IT-SUPPORT-RP">f6b3bfe7db17c810790cf158bf9619a6</u_assignment_group><u_recipient>workintake@radpartners.com</u_recipient></u_dl_email_assignment></record_update>]]></payload>
+        <payload_hash>730568902</payload_hash>
+        <record_name>9020</record_name>
+        <reverted_from/>
+        <source>5887d1711bd160104db032af034bcb94</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-27 15:51:47</sys_created_on>
+        <sys_id>8691869e1b9da0104db032af034bcb04</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>176a4e607730000001</sys_recorded_at>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-27 15:51:47</sys_updated_on>
+        <type>Email Assignment Data Lookup</type>
+        <update_guid>0e91869e489da010ba36288f43dc6d03</update_guid>
+        <update_guid_history>0e91869e489da010ba36288f43dc6d03:730568902,9b610a9efd9da010d3cae9c0a6e44ae2:-235126992,a76f751eb39da0102f4f500e0792a560:2052864182</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="9,020">dffbff361b5d24104db032af034bcb41</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-29 14:03:30</sys_created_on>
+        <sys_db_object display_value="" name="u_dl_email_assignment">u_dl_email_assignment</sys_db_object>
+        <sys_id>9c6561e51f0a472897c378d7b0194e40</sys_id>
+        <sys_metadata>546f391e1b9da0104db032af034bcb80</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>9020</sys_name>
+        <sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope>
+        <sys_scope_delete display_value="">2e7c715caf214bd792375629f1bf0d51</sys_scope_delete>
+        <sys_update_name>u_dl_email_assignment_546f391e1b9da0104db032af034bcb80</sys_update_name>
+        <sys_update_version display_value="u_dl_email_assignment_546f391e1b9da0104db032af034bcb80">8691869e1b9da0104db032af034bcb04</sys_update_version>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-29 14:03:30</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

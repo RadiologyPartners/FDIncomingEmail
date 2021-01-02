@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl">
+    <sys_security_acl action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <admin_overrides>true</admin_overrides>
+        <advanced>false</advanced>
+        <condition/>
+        <description>Default access control on u_dl_email_assignment</description>
+        <name>u_dl_email_assignment</name>
+        <operation display_value="create">create</operation>
+        <script/>
+        <sys_class_name>sys_security_acl</sys_class_name>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-27 15:21:51</sys_created_on>
+        <sys_id>2bba3d5a1b9d6010b247ca2b234bcbb0</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>u_dl_email_assignment</sys_name>
+        <sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope>
+        <sys_update_name>sys_security_acl_2bba3d5a1b9d6010b247ca2b234bcbb0</sys_update_name>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-27 15:21:51</sys_updated_on>
+        <type display_value="record">record</type>
+    </sys_security_acl>
+</record_update>

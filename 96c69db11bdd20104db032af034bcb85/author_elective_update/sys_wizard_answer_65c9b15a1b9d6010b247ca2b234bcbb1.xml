@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_wizard_answer">
+    <sys_wizard_answer action="DELETE">
+        <active>true</active>
+        <answer>Assignment Email Data Lookup</answer>
+        <button_label/>
+        <dependent_value/>
+        <element/>
+        <name>Assignment Email Data Lookup</name>
+        <next_question/>
+        <order>100</order>
+        <payload_name/>
+        <question display_value="Application File" name="Application File">f5e38832db1200109f269ae9db9619d4</question>
+        <roles/>
+        <script/>
+        <sys_class_name>sys_wizard_answer</sys_class_name>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-27 15:17:38</sys_created_on>
+        <sys_id>65c9b15a1b9d6010b247ca2b234bcbb1</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Assignment Email Data Lookup</sys_name>
+        <sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope>
+        <sys_update_name>sys_wizard_answer_65c9b15a1b9d6010b247ca2b234bcbb1</sys_update_name>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-27 15:17:38</sys_updated_on>
+        <table/>
+        <target_url>u_dl_assignment_email.do</target_url>
+        <type>1</type>
+    </sys_wizard_answer>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</application>
+        <file_path/>
+        <instance_id>76493423db1d54d0e26fd7c8f4961958</instance_id>
+        <instance_name>radbeta</instance_name>
+        <name>sys_wizard_answer_65c9b15a1b9d6010b247ca2b234bcbb1</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_wizard_answer"><sys_wizard_answer action="INSERT_OR_UPDATE"><active>true</active><answer>Assignment Email Data Lookup</answer><button_label/><dependent_value/><element/><name>Assignment Email Data Lookup</name><next_question/><order>100</order><payload_name/><question display_value="Application File" name="Application File">f5e38832db1200109f269ae9db9619d4</question><roles/><script/><sys_class_name>sys_wizard_answer</sys_class_name><sys_created_by>byron.payton@admin</sys_created_by><sys_created_on>2020-12-27 15:17:38</sys_created_on><sys_id>65c9b15a1b9d6010b247ca2b234bcbb1</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Assignment Email Data Lookup</sys_name><sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package><sys_policy/><sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope><sys_update_name>sys_wizard_answer_65c9b15a1b9d6010b247ca2b234bcbb1</sys_update_name><sys_updated_by>byron.payton@admin</sys_updated_by><sys_updated_on>2020-12-27 15:17:38</sys_updated_on><table/><target_url>u_dl_assignment_email.do</target_url><type>1</type></sys_wizard_answer></record_update>]]></payload>
+        <payload_hash>-911761085</payload_hash>
+        <record_name>Assignment Email Data Lookup</record_name>
+        <reverted_from/>
+        <source>ced90500db11201007db0e85ca96196b</source>
+        <source_table>sys_upgrade_history</source_table>
+        <state>previous</state>
+        <sys_created_by/>
+        <sys_created_on>2020-12-20 12:01:52</sys_created_on>
+        <sys_id>ba6a3d5a1b9d6010b247ca2b234bcb9d</sys_id>
+        <sys_mod_count/>
+        <sys_recorded_at>176800703800000000</sys_recorded_at>
+        <sys_updated_by/>
+        <sys_updated_on/>
+        <type>Answer</type>
+        <update_guid>7a6a3d5a7d9d6010c41c010ee1b4339d</update_guid>
+        <update_guid_history>7a6a3d5a7d9d6010c41c010ee1b4339d:-911761085</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-27 15:20:26</sys_created_on>
+        <sys_db_object display_value="" name="sys_wizard_answer">sys_wizard_answer</sys_db_object>
+        <sys_id>342cd5efc7894ce181861132b4d06be9</sys_id>
+        <sys_metadata>65c9b15a1b9d6010b247ca2b234bcbb1</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Assignment Email Data Lookup</sys_name>
+        <sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package>
+        <sys_parent display_value="Application File">f5e38832db1200109f269ae9db9619d4</sys_parent>
+        <sys_policy/>
+        <sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope>
+        <sys_scope_delete display_value="">2e7c715caf214bd792375629f1bf0d51</sys_scope_delete>
+        <sys_update_name>sys_wizard_answer_65c9b15a1b9d6010b247ca2b234bcbb1</sys_update_name>
+        <sys_update_version display_value="sys_wizard_answer_65c9b15a1b9d6010b247ca2b234bcbb1">ba6a3d5a1b9d6010b247ca2b234bcb9d</sys_update_version>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-27 15:20:26</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

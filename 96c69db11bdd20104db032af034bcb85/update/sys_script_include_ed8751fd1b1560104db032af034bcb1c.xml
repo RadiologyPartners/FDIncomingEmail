@@ -1,0 +1,910 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>global.FDIncomingEmail</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>FDIncomingEmail</name>
+        <script><![CDATA[var FDIncomingEmail = Class.create();
+FDIncomingEmail.prototype = {
+
+    initialize: function(email) {
+        this.email = email;
+        this.variables = this._parseEmailVariables();
+    },
+
+    //  ################################################################################
+    //  #   addRelatedKnowledge - add related knowledge from array to given parent
+    //  ################################################################################
+    addRelatedKnowledge: function(parent, kb) {
+        var grKb = new GlideRecord('task_rel_kb');
+        var x;
+
+        for (x = 0; x < kb.length; x++) {
+            grKb.newRecord();
+            grKb.setValue('parent', parent);
+            grKb.setValue('child', kb[x]);
+            grKb.insert();
+        }
+    },
+
+    //  ################################################################################
+    //  #   getAdditionalAssignee - get additional assignee users from email, if
+    //  #                           specified, as well as those provided in alternate
+    //  #                           value as comma-separated list
+    //  ################################################################################
+    getAdditionalAssignee: function(altValue) {
+        var varName = 'assign_also';
+        var assignList = [];
+
+        //  add email variable value as list or single entry
+        if (this.variables.hasOwnProperty(varName + '__list')) {
+            this._appendGlidelist(assignList, this.variables[varName + '__list'], true, true);
+        } else if (this.variables.hasOwnProperty(varName)) {
+            this._appendGlideList(assignList, this.variables[varName], true, true);
+        }
+        //  add any entries from alternate value, if provided
+        if (altValue) {
+            this._appendGlideList(assignList, altValue, true, true);
+        }
+        return assignList.join(',');
+    },
+
+    //  ################################################################################
+    //  #   getAssignment - get assignment information from email if specified;
+    //  #                   otherwise, iterate data lookup list to determine based
+    //  #                   upon recipient value
+    //  ################################################################################
+    getAssignment: function() {
+        var varGroup = 'group';
+        var varUser = 'assign';
+        var assign = {};
+        var emailRecip, grDL, group, user;
+
+        //  check for group email variable
+        if (this.variables.hasOwnProperty(varGroup)) {
+            group = this._getGroup(this.variables[varGroup]);
+            if (group.found) {
+                assign.group = group.id;
+                //  check for assignee email variable
+                if (this.variables.hasOwnProperty(varUser)) {
+                    user = this._getUser(this.variables[varUser]);
+                    if (user.found) {
+                        assign.user = user.id;
+                    }
+                }
+                //  if no assignee found, check for group default assignee
+                if (!assign.hasOwnProperty('user') && group.assignee) {
+                    assign.user = group.assignee;
+                }
+            }
+        }
+        //  if no group, use data lookup table to determine group based upon recipient
+        if (!assign.hasOwnProperty('group')) {
+            grDL = new GlideRecord('u_dl_email_assignment');
+            emailRecip = this.email.getValue('recipients');
+            //  query active data lookup sequenced by order and recipient value
+            grDL.addEncodedQuery('active=true');
+            grDL.orderBy('order');
+            grDL.orderBy('u_recipient');
+            grDL.query();
+            while (grDL.next()) {
+                //  if recipient value found in recipient list, or at end of query,
+                //  return assignment information found in data lookup record
+                if (emailRecip.includes(grDL.getValue('u_recipient')) || !grDL.hasNext()) {
+                    assign.group = grDL.getValue('u_assignment_group');
+                    assign.user = grDL.getValue('u_assign_to');
+                    break;
+                }
+            }
+        }
+        return assign;
+    },
+
+    //  ################################################################################
+    //  #   getCaller - get caller (or requestor) value from email variable, or from
+	//  #               user identified in the email record
+    //  ################################################################################
+    getCaller: function(altValue) {
+		var varName = 'caller';
+		var caller = '';
+		var user;
+		
+		if (this.variables.hasOwnProperty(varName)) {
+			user = this._getUser(this.variables(varName));
+			if (user.found) {
+				caller = user.id;
+			}
+		}
+		if (!caller && altValue) {
+			user = this._getUser(altValue);
+			if (user.found) {
+				caller = user.id;
+			}
+		}
+		if (!caller && !this.email.getElement('user_id').nil()) {
+			caller = this.email.getValue('user_id');
+		}
+		return caller;
+    },
+
+    //  ################################################################################
+    //  #   getCategory - get category value for given table based upon email variable,
+    //  #                 alternate value provided, or use default value of 'inquiry'
+    //  ################################################################################
+    getCategory: function(table, altValue) {
+        var varName = 'category';
+        var choices = this._getChoices(table, 'category');
+        var category = '';
+
+        if (this.variables.hasOwnProperty(varName) && choices.hasOwnProperty(this.variables[varName])) {
+            //  email variable contains a valid category value
+            category = this.variables[varName];
+        } else if (altValue && choices.hasOwnProperty(altValue)) {
+            //  alternate value specified and is valid
+            category = altValue;
+        } else if (choices.hasOwnProperty('inquiry')) {
+            //  otherwise, use default value if valid
+            category = 'inquiry';
+        }
+        return category;
+    },
+
+	//  ################################################################################
+	//  #   getCompany - get company reference from email variable, or the value
+	//  #                specified in the caller provided; otherwise, return alternate
+	//  #                value if provided
+	//  ################################################################################
+	getCompany: function(caller, altValue) {
+		var varName = 'company';
+		var company = '';
+		var core, user;
+		
+		if (this.variables.hasOwnProperty(varName)) {
+			core = this._getCompany(this.variables(varName));
+			if (core.found) {
+				company = core.id;
+			}
+		}
+		if (!company && caller) {
+			user = this._getUser(caller);
+			if (user.found) {
+				company = user.company;
+			}
+		}
+		if (!company && altValue) {
+			core = this._getCompany(altValue);
+			if (core.found) {
+				company = core.id;
+			}
+		}
+		return company;
+	},
+	
+    //  ################################################################################
+    //  #   getDescription - get description based upon email variable if provided;
+    //  #                    otherwise, return body of email without key:value pairs
+    //  ################################################################################
+    getDescription: function() {
+        var varName = 'description';
+        var longDesc = '';
+
+        if (this.variables.hasOwnProperty(varName)) {
+            longDesc = this._replaceLF(this.variables(varName));
+        } else {
+            longDesc = this.variables.__body;
+        }
+        return longDesc;
+    },
+
+    //  ################################################################################
+    //  #   getDueDate - calculate due date based upon email variable, alternate value
+    //  #                provided, or return empty string
+    //  ################################################################################
+    getDueDate: function(altValue) {
+        var varName = 'due_days';
+        var dueDate = '';
+        var dueDays = 0;
+        var bizHours, bizSched, dueSpan, gdtWork;
+
+        if (this.variables.hasOwnProperty(varName) && this._isNumeric(this.variables[varName])) {
+            //  email variable contains a numeric value
+            dueDays = Number(Number(this.variables[varName]).toFixed(2));
+        } else if (altValue && this._isNumeric(altValue)) {
+            //  alternate value was provided
+            dueDays = Number(Number(altValue).toFixed(2));
+        }
+        //  if number of days were provided,
+        //  calculate due date by adding business days to current date/time
+        if (dueDays > 0) {
+            gdtWork = new GlideDateTime();
+            bizSched = this._getBizDaySchedule();
+            bizHours = this._getBizDayHours();
+            //  check if current date/time is outside of business day schedule
+            if (!bizSched.isInSchedule(gdtWork)) {
+                //  add seconds to current date/time to move into business day schedule
+                gdtWork.addSeconds(bizSched.whenNext(gdtWork) / 1000);
+            }
+            //  convert business days to milliseconds to create duration object
+            dueSpan = new GlideDuration(dueDays * bizHours * 60 * 60 * 1000);
+            //  add duration object to get due date value
+            gdtWork = bizSched.add(gdtWork, dueSpan);
+            dueDate = gdtWork.getValue();
+        }
+        return result;
+    },
+
+    //  ################################################################################
+    //  #   getImpact - get impact value for given table based upon email variable,
+    //  #               alternate value provided, or use default value based upon
+    //  #               importance property; if importance is 'high' return second or
+    //  #               first value from available choices; otherwise, return last
+    //  #               value from available choices
+    //  ################################################################################
+    getImpact: function(table, altValue) {
+        var varName = 'impact';
+        var choices = this._getChoices(table, 'impact');
+        var impact = '';
+
+        if (this.variables.hasOwnProperty(varName) && choices.hasOwnProperty(this.variables[varName])) {
+            //  email variable contains valid impact value
+            impact = this.variables[varName];
+        } else if (altValue && choices.hasOwnProperty(altValue)) {
+            //  alternate value specified and is valid
+            impact = altValue;
+        } else if (this._getImportance() == 'high') {
+            //  use second or first choice when email marked as high importance
+            impact = (choices.__list.length > 1 ? choices.__list[1] : choices.__first);
+        } else {
+            //  otherwise, use default value
+            impact = choices.__last;
+        }
+        return impact;
+    },
+
+	//  ################################################################################
+	//  #   getLocation
+	//  ################################################################################
+	getLocation: function(company, caller, altValue) {
+		var varName = 'location';
+		var location = '';
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		return location;
+	},
+	
+    //  ################################################################################
+    //  #   getRelatedKnowledge - get array of knowledge article sys_ids that should
+    //  #                         be related to ticket; include all articles specified
+    //  #                         in email variables, as well as those provided in
+    //  #                         alternate value as comma-separated list
+    //  ################################################################################
+    getRelatedKnowledge: function(altValue) {
+        var varName = 'kb';
+        var kbList = [];
+        var grKb, id, qry, workList, x;
+
+        //  initialize list by splitting alternate value, or use empty array
+        workList = (altValue ? altValue.split(',') : []);
+        if (this.variables.hasOwnProperty(varName + '__list')) {
+            //  add email variable list
+            workList = workList.concat(this.variables[varName + '__list']);
+        } else if (this.variables.hasOwnProperty(varName)) {
+            //  add single email variable value
+            workList.push(this.variables[varName]);
+        }
+        if (workList.length > 0) {
+            grKb = new GlideRecord('kb_knowledge');
+            for (x = 0; x < workList.length; x++) {
+                //  search for most recent published version of
+                //  knowledge article using number
+                qry = 'number=' + workList[x];
+                qry += '^workflow_state=published';
+                grKb.initialize();
+                grKb.addEncodedQuery(qry);
+                grKb.orderByDesc('published');
+                grKb.query();
+                if (grKb.next()) {
+                    id = grKb.getUniqueValue();
+                    if (kbList.indexOf(id) < 0) {
+                        kbList.push(id);
+                    }
+                }
+            }
+        }
+        return kbList;
+    },
+
+    //  ################################################################################
+    //  #   getRequestedFor - get id for reuqested for user specified in email variable
+    //  ################################################################################
+    getRequestedFor: function() {
+        var varName = 'requested_for';
+        var requestedFor = '';
+        var user;
+
+        if (this.variables.hasOwnProperty(varName)) {
+            user = this._getUser(this.variables[varName]);
+            if (user.found) {
+                requestedFor = user.id;
+            }
+        }
+        return requestedFor;
+    },
+
+    //  ################################################################################
+    //  #   getShortDescription - get short description based upon email variable
+    //  #                         if provided; otherwise, return email subject or
+    //  #                         literal value of 'inbound email received' if no
+    //  #                         email subject is provided
+    //  ################################################################################
+    getShortDescription: function() {
+        var varName = 'short_description';
+        var shortDesc = 'inbound email received';
+
+        if (this.variables.hasOwnProperty(varName)) {
+            shortDesc = this._replaceLF(this.variables[varName]);
+        } else if (!this.email.getElement('subject').nil()) {
+            shortDesc = this.email.getValue('subject');
+        }
+        return shortDesc;
+    },
+
+    //  ################################################################################
+    //  #   getStudyInfo - get study information from email variable if provided;
+    //  #                  otherwise, return an empty string
+    //  ################################################################################
+    getStudyInfo: function() {
+        var varName = 'study';
+        var study = '';
+
+        if (this.variables.hasOwnProperty(varName)) {
+            study = this._replaceLF(this.variables[varName]);
+        }
+        return study;
+    },
+
+    //  ################################################################################
+    //  #   getSubcategory - get subcategory value for given table and dependent value
+    //  #                    based upon email variable, alternate value provided, or
+    //  #                    use default value of 'general' or 'other'
+    //  ################################################################################
+    getSubcategory: function(table, dependent, altValue) {
+        var varName = 'subcategory';
+        var choices = this._getChoices(table, 'subcategory', dependent);
+        var subcategory = '';
+
+        //  dependent value required for subcategory
+        if (dependent) {
+            if (this.variables.hasOwnProperty(varName) && choices.hasOwnProperty(this.variables[varName])) {
+                //  email variable contains valid subcategory value
+                subcategory = this.variables[varName];
+            } else if (altValue && choices.hasOwnProperty(altValue)) {
+                //  alternate value specified and is valid
+                subcategory = altValue;
+            } else if (choices.hasOwnProperty('general')) {
+                //  otherwise, use default value if valid
+                subcategory = 'general';
+            } else if (choices.hasOwnProperty('other')) {
+                //  otherwise, use default value if valid
+                subcategory = 'other';
+            }
+        }
+        return subcategory;
+    },
+
+    //  ################################################################################
+    //  #   getUrgency - get urgency value for given table based upon email variable,
+    //  #                alternate value provided, or use default value of last
+    //  #                available choice
+    //  ################################################################################
+    getUrgency: function(table, altValue) {
+        var varName = 'urgency';
+        var choices = this._getChoices(table, 'urgency');
+        var urgency = '';
+
+        if (this.variables.hasOwnProperty(varName) && choices.hasOwnProperty(this.variables[varName])) {
+            //  email variable contains valid impact value
+            urgency = this.variables[varName];
+        } else if (altValue && choices.hasOwnProperty(altValue)) {
+            //  alternate value specified and is valid
+            urgency = altValue;
+        } else {
+            //  otherwise, use default value
+            urgency = choices.__last;
+        }
+        return urgency;
+    },
+
+    //  ################################################################################
+    //  #   getWatchList - get watch list for ticket, includes users specified in
+    //  #                  email variables, as well as those provided in alternate
+    //  #                  value as comma-separated list; in addition, can add any
+    //  #                  users from the To and Cc fields of the email if they are
+    //  #                  active users in the platform
+    //  ################################################################################
+    getWatchList: function(addDirect, addCopied, altValue) {
+        var varName = 'watch';
+        var watchList = [];
+
+        //  add email variable value as list or single entry
+        if (this.variables.hasOwnProperty(varName + '__list')) {
+            this._appendGlidelist(watchList, this.variables[varName + '__list']);
+        } else if (this.variables.hasOwnProperty(varName)) {
+            this._appendGlideList(watchList, this.variables[varName]);
+        }
+        //  add any entries from alternate value, if provided
+        if (altValue) {
+            this._appendGlideList(watchList, altValue);
+        }
+        //  add users from direct recipient list, if requested
+        if (addDirect && !this.email.getElement('direct').nil()) {
+            this._appendGlideList(watchList, this.email.getValue('direct'), true);
+        }
+        //  add users from cpoied recipient list, if requested
+        if (addCopied && !this.email.getElement('copied').nil()) {
+            this._appendGlideList(watchList, this.email.getValue('copied'), true);
+        }
+        return watchList.join(',');
+    },
+
+    //  ################################################################################
+    //  #   getWorkNoteList - get work note list for ticket, includes users specified
+    //  #                     in email variables, as well as those provided in
+    //  #                     alternate value as comma-separated list
+    //  ################################################################################
+    getWorkNoteList: function(altValue) {
+        var varName = 'work_note';
+        var noteList = [];
+
+        //  add email variable value as list or single entry
+        if (this.variables.hasOwnProperty(varName + '__list')) {
+            this._appendGlidelist(noteList, this.variables[varName + '__list'], true);
+        } else if (this.variables.hasOwnProperty(varName)) {
+            this._appendGlideList(noteList, this.variables[varName], true);
+        }
+        //  add any entries from alternate value, if provided
+        if (altValue) {
+            this._appendGlideList(noteList, altValue, true);
+        }
+        return noteList.join(',');
+    },
+
+    //  ################################################################################
+    //  #   _appendGlideList - add given list of users to GlideList; if not flagged
+    //  #                      as user-only, include non-user emails to the list; if
+    //  #                      flagged as id-only, include only users with user names
+    //  ################################################################################
+    _appendGlideList: function(gList, addList, userOnly, idOnly) {
+        var workList = [];
+        var id, user, x;
+
+        if (typeof(addList) == 'string' && addList) {
+            workList = workList.concat(addList.split(','));
+        } else if (typeof(addList) == 'object' && Array.isArray(addList)) {
+            workList = workList.concat(addList);
+        }
+        for (x = 0; x < workList.length; x++) {
+            id = workList[x].trim();
+            user = this._getUser(id);
+            if (user.found && !idOnly) {
+                //  user profile found and not limited to those with user_name
+                if (gList.indexOf(user.id) < 0) {
+                    gList.push(user.id);
+                }
+            } else if (user.found && idOnly && user.hasOwnProperty('user_name')) {
+                //  user profile found and limited to those with user_name
+                if (gList.indexOf(user.id) < 0) {
+                    gList.push(user.id);
+                }
+            } else if (!userOnly && this._isEmail(id)) {
+                //  user profile not found, but including email
+                id = id.toLowerCase();
+                if (gList.indexOf(id) < 0) {
+                    gList.push(id);
+                }
+            }
+        }
+    },
+
+    //  ################################################################################
+    //  #   _getBizDayHours - get value of system property for number of hours
+    //  #                     within a business day; return 8 if no value found
+    //  ################################################################################
+    _getBizDayHours: function() {
+        var prop = gs.getProperty('rp.com.business.day.hours');
+        var hours = 8;
+
+        if (prop) {
+            prop = Number(prop);
+            hours = (isNaN(prop) ? hours : prop);
+        }
+        return hours;
+    },
+
+    //  ################################################################################
+    //  #   _getBizDaySchedule - get sys_id for the business day schedule to use for
+    //  #                        date calculations
+    //  ################################################################################
+    _getBizDaySchedule: function() {
+        var prop = gs.getProperty('rp.com.business.day.schedule');
+        var altNames = [
+            'RP Business Days',
+            '8-5 weekdays excluding holidays',
+            '8-5 weekdays'
+        ];
+        var schedule = null;
+        var grSched, x;
+
+        if (prop) { //  return schedule specified in system property
+            schedule = new GlideSchedule(prop);
+        } else { //  iterate through alternative schedule names and return first found
+            grSched = new GlideRecord('cmn_schedule');
+            for (x = 0; x < altNames.length; x++) {
+                grSched.initialize();
+                grSched.addEncodedQuery('name=' + altNames[x]);
+                grSched.setLimit(1);
+                grSched.query();
+                if (grSched.next()) {
+                    schedule = new GlideSchedule(grSched.getUniqueValue());
+                    break;
+                }
+            }
+        }
+        return schedule;
+    },
+
+    //  ################################################################################
+    //  #   _getChoices - get choice list for given table, field and dependent value;
+    //  #                 returns an object with keys for each value, and also returns
+    //  #                 the following special keys:
+    //  #                     __count - number of values returned
+    //  #                     __list - array of values by sequence
+    //  #                     __first - first value in sequence
+    //  #                     __last - last value in sequence
+    //  ################################################################################
+    _getChoices: function(table, field, dependent) {
+        var grChoice = new GlideRecord('sys_choice');
+        var choices = {};
+        var list = [];
+        var key, qry, tables, x;
+
+        //  get table extension hierarchy for given table as array
+        //  array is ordered starting with given table, and moves up through hierarchy
+        //  if not extended, given table is returned as array
+        tables = j2js(new GlideRecordUtil().getTables(table));
+
+        //  iterate through list of tables until we find choices
+        for (x = 0; x < tables.length; x++) {
+            qry = 'name=' + tables[x];
+            qry += '^element=' + field;
+            qry += (dependent ? '^dependent_value=' + dependent : '');
+            grChoice.initialize();
+            grChoice.addEncodedQuery(qry);
+            grChoice.orderBy('sequence');
+            grChoice.orderBy('value');
+            grChoice.query();
+            //  if any choices exist for table name,
+            //  build return object and stop looking;
+            //  otherwise, check next table name in list
+            if (grChoice.hasNext()) {
+                while (grChoice.next()) {
+                    if (!JSUtil.getBooleanValue(grChoice, 'inactive')) {
+                        key = grChoice.getValue('value');
+                        choices[key] = grChoice.getValue('label');
+                        list.push(key);
+                    }
+                }
+                choices.__count = list.length;
+                choices.__list = list;
+                choices.__first = (list.length > 0 ? list[0] : null);
+                choices.__last = (list.length > 0 ? list[list.length - 1] : null);
+                break;
+            }
+        }
+        return choices;
+    },
+
+    //  ################################################################################
+    //  #   _getCompany - search for company using given value in the following fields:
+	//  #                  * primary=true (if search value = '@primary')
+    //  #                  * sys_id
+	//  #                  * u_short_name
+    //  #                  * name
+	//  #                  * u_practice_id.u_practice_sub_id
+    //  ################################################################################
+	_getCompany: function(search) {
+		var rePractice = new RegExp('^([0-9]+)[.]([0-9]+)$');
+		var grCompany = new GlideRecord('core_company');
+		var fieldList = [
+			'primary',
+			'sys_id',
+			'u_short_name',
+			'name',
+			'practice'
+		];
+		var company = {
+			found: false
+		};
+		var matches, qry, x;
+		
+		for (x = 0; x < fieldList.length; x++) {
+			grCompany.initialize();
+			if (fieldList[x] == 'primary') {
+				qry = 'primary=true^u_active=true';
+			} else if (fieldList[x] == 'practice' && rePractice.test(search)) {
+				matches = search.match(rePractice);
+				qry = 'u_practice_id=' + matches[1] + '^u_practice_sub_id=' + matches[2] + '^u_active=true';
+			} else if (grCompany.isValidField(fieldList[x])) {
+				qry = fieldList[x] + '=' + search + '^u_active=true';
+			} else {
+				qry = '';
+			}
+			if (qry) {
+				grCompany.addEncodedQuery(qry);
+				grCompany.query();
+				if (grCompany.next() && !grCompany.hasNext()) {
+					company.found = true;
+					break;
+				}
+			}
+		}
+        //  if we found a company, include any desired values in returned object
+        if (company.found) {
+            company.id = grCompany.getUniqueValue();
+        }
+        return company;
+	},
+	
+    //  ################################################################################
+    //  #   _getGroup - search for group using given value in the following fields:
+    //  #                  * sys_id
+    //  #                  * email
+    //  #                  * u_internal_id
+    //  #                  * name
+    //  ################################################################################
+    _getGroup: function(search) {
+        var grGroup = new GlideRecord('sys_user_group');
+		var fieldList = [
+			'sys_id',
+			'email',
+			'u_internal_id',
+			'name'
+		];
+        var group = {
+            found: false
+        };
+		var x;
+		
+		for (x = 0; x < fieldList.length; x++) {
+			grGroup.initialize();
+			if (grGroup.isValidField(fieldList[x])) {
+				grGroup.addEncodedQuery(fieldList[x] + '=' + search + '^active=true');
+				grGroup.query();
+				if (grGroup.next() && !grGroup.hasNext()) {
+					group.found = true;
+					break;
+				}
+			}
+		}
+        //  if we found a group, include any desired values in returned object
+        if (group.found) {
+            group.id = grGroup.getUniqueValue();
+            group.assignee = grGroup.getValue('default_assignee');
+        }
+        return group;
+    },
+
+    //  ################################################################################
+    //  #   _getImportance - return email importance property as lower-case string;
+    //  #                    if property not found, return an empty string
+    //  ################################################################################
+    _getImportance: function() {
+        var importance = '';
+
+        if (!this.email.getElement('importance').nil()) {
+            importance = this.email.getValue('importance').toLowerCase();
+        }
+        return importance;
+    },
+
+	//  ################################################################################
+	//  #   _getLocation -  search for location using given value in the following
+	//  #                   fields:
+    //  #                      * sys_id
+	//  #                      * u_site_code
+    //  #                      * name
+	//  ################################################################################
+	_getLocation: function(search, company) {
+		var grLocation = new GlideRecord('cmn_location');
+		var fieldList = [
+			'sys_id',
+			'u_site_code',
+			'name'
+		];
+		var location = {
+			found: false
+		};
+		var core, x;
+		
+		core = this._getCompany(company);
+		if (core.found) {
+			for (x = 0; x < fieldList.length; x++) {
+				grLocation.initialize();
+				if (grLocation.isValidField(fieldList[x])) {
+					grLocation.addEncodedQuery(fieldList[x] + '=' + search + '^company=' + core.id + '^u_active=true');
+					grLocation.query();
+					if (grLocation.next() && !grLocation.hasNext()) {
+						location.found = true;
+						break;
+					}
+				}
+			}
+		}
+		//  if we found a location, include any desired values in returned object
+		if (location.found) {
+			location.id = grLocation.getUniqueValue();
+		}
+		return location;
+	},
+	
+    //  ################################################################################
+    //  #   _getUser - search for user using given value in the following fields:
+    //  #                 * sys_id
+    //  #                 * user_name
+    //  #                 * u_samaccountname
+    //  #                 * u_employee_id
+    //  #                 * employee_number
+    //  #                 * email
+    //  #                 * name
+    //  ################################################################################
+    _getUser: function(search) {
+        var grUser = new GlideRecord('sys_user');
+		var fieldList = [
+			'sys_id',
+			'user_name',
+			'u_samaccountname',
+			'u_employee_id',
+			'employee_number',
+			'email',
+			'name'
+		];
+        var user = {
+            found: false
+        };
+		var x;
+		
+		for (x = 0; x < fieldList.length; x++) {
+			grUser.initialize();
+			if (grUser.isValidField(fieldList[x])) {
+				grUser.addEncodedQuery(fieldList[x] + '=' + search + '^active=true');
+				grUser.query();
+				if (grUser.next() && !grUser.hasNext()) {
+					user.found = true;
+					break;
+				}
+			}
+		}
+        //  if we found a user, include any desired values in returned object
+        if (user.found) {
+            user.id = grUser.getUniqueValue();
+            user.company = grUser.getValue('company');
+			user.location = grUser.getValue('location');
+			user.user_name = grUser.getValue('user_name');
+        }
+        return user;
+    },
+
+    //  ################################################################################
+    //  #   _isEmail - return boolean indicating if given text is an email address
+    //  ################################################################################
+    _isEmail: function(text) {
+        return /^[a-z0-9._%+-]{1,64}@(?:[a-z0-9-]{1,63}\.){1,8}[a-z]{2,63}$/i.test(text);
+    },
+
+    //  ################################################################################
+    //  #   _isNumeric - return boolean indicating if given text is numeric
+    //  ################################################################################
+    _isNumeric: function(text) {
+        var numeric = false;
+        var work;
+
+        if (text) {
+            work = Number(text);
+            numeric = !isNaN(work);
+        }
+        return numeric;
+    },
+
+    //  ################################################################################
+    //  #   _isSysId - return boolean indicating if given text is a sys_id value
+    //  ################################################################################
+    _isSydId: function(text) {
+        return /^[0-9a-f]{32}$/.test(text);
+    },
+
+    //  ################################################################################
+    //  #  _parseEmailVariables - parse the email body for any key:value pairs; keys
+    //  #                         are converted to lower case, and both key and value
+    //  #                         have whitespace trimmed; only the first value of a
+    //  #                         given key is returned, but when multiple values are
+    //  #                         found for the same key an additional property is
+    //  #                         created with the '__list' suffix that will contain
+    //  #                         an array of all values;  key:value pairs must follow
+    //  #                         these rules:
+    //  #                            * appear on separate lines, at start of line
+    //  #                            * begin with letter, only contain [a-z0-9._-]
+    //  #                            * minimum length of 2 characters
+    //  #                            * key may have trailing spaces before ':'
+    //  ################################################################################
+    _parseEmailVariables: function() {
+        var reKeyValue = new RegExp('^([a-z][0-9a-z._-]+[ ]*):(.+)$', 'i');
+        var lines = this.email.getValue('body_text').split('\n');
+        var variables = {
+            __body: ''
+        };
+        var key, keyList, list, matches, value, x;
+
+        for (x = 0; x < lines.length; x++) {
+            //  check line matching key:value pattern
+            if (reKeyValue.test(lines[x])) {
+                //  get match values to split key and value
+                matches = lines[x].match(reKeyValue);
+                key = matches[1].toString().trim().toLowerCase();
+                value = matches[2].toString().trim();
+                //  check to make sure we have a value
+                if (value) {
+                    //  if variable already exists add to list property for key
+                    if (variables.hasOwnProperty(key)) {
+                        keyList = key + '__list';
+                        list = (variables.hasOwnProperty(keyList) ? variables[keyList] : [variables[key]]);
+                        list.push(value);
+                    } else {
+                        variables[key] = value;
+                    }
+                }
+            } else {
+                //  add unmatched lines to __body property, avoiding multiple blank lines
+                if (variables.__body.substr(-2) != '\n\n') {
+                    variables.__body += lines[x] + '\n';
+                }
+            }
+        }
+        return variables;
+    },
+
+    //  ################################################################################
+    //  #   _replaceLF - replace the liternal string '{lf}' in text with newline;
+    //  #                this allows the inclusion of linefeeds in email variables
+    //  ################################################################################
+    _replaceLF: function(text) {
+        return text.replace(/{lf}/gi, '\n');
+    },
+
+    type: 'FDIncomingEmail'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-26 00:03:22</sys_created_on>
+        <sys_id>ed8751fd1b1560104db032af034bcb1c</sys_id>
+        <sys_mod_count>25</sys_mod_count>
+        <sys_name>FDIncomingEmail</sys_name>
+        <sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope>
+        <sys_update_name>sys_script_include_ed8751fd1b1560104db032af034bcb1c</sys_update_name>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-28 00:03:06</sys_updated_on>
+    </sys_script_include>
+</record_update>

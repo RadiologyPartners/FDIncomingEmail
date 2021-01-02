@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element attributes="update_synch=true" extends="dl_matcher" label="Email Assignment Data Lookup" max_length="40" name="u_dl_email_assignment" sizeclass="12" type="collection">
+        <element dependent="u_assignment_group" dependent_on_field="u_assignment_group" label="Assigned to" max_length="32" name="u_assigned_to" reference="sys_user" reference_floats="true" reference_qual="active=true^EQ" reference_qual_condition="active=true^EQ" type="reference" use_dependent_field="true"/>
+        <element label="Assignment group" mandatory="true" max_length="32" name="u_assignment_group" reference="sys_user_group" reference_qual="active=true^EQ" reference_qual_condition="active=true^EQ" type="reference"/>
+        <element label="Recipient" mandatory="true" max_length="1000" name="u_recipient" type="string"/>
+        <index name="index">
+            <element name="u_assigned_to"/>
+        </index>
+        <index name="index2">
+            <element name="u_assignment_group"/>
+        </index>
+    </element>
+</database>

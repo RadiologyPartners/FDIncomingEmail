@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl_role">
+    <sys_security_acl_role action="DELETE">
+        <sys_class_name>sys_security_acl_role</sys_class_name>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-27 15:17:37</sys_created_on>
+        <sys_id>21c9b15a1b9d6010b247ca2b234bcb89</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>u_dl_assignment_email.data_lookup_admin</sys_name>
+        <sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope>
+        <sys_security_acl display_value="u_dl_assignment_email">21c9b15a1b9d6010b247ca2b234bcb85</sys_security_acl>
+        <sys_update_name>sys_security_acl_role_21c9b15a1b9d6010b247ca2b234bcb89</sys_update_name>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-27 15:17:37</sys_updated_on>
+        <sys_user_role display_value="data_lookup_admin" name="data_lookup_admin">d329c9b0a7002000dada192bd9acf463</sys_user_role>
+        <transaction_id/>
+    </sys_security_acl_role>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</application>
+        <file_path/>
+        <instance_id>76493423db1d54d0e26fd7c8f4961958</instance_id>
+        <instance_name>radbeta</instance_name>
+        <name>sys_security_acl_role_21c9b15a1b9d6010b247ca2b234bcb89</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl_role"><sys_security_acl_role action="INSERT_OR_UPDATE"><sys_class_name>sys_security_acl_role</sys_class_name><sys_created_by>byron.payton@admin</sys_created_by><sys_created_on>2020-12-27 15:17:37</sys_created_on><sys_id>21c9b15a1b9d6010b247ca2b234bcb89</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_dl_assignment_email.data_lookup_admin</sys_name><sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package><sys_policy/><sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope><sys_security_acl display_value="u_dl_assignment_email">21c9b15a1b9d6010b247ca2b234bcb85</sys_security_acl><sys_update_name>sys_security_acl_role_21c9b15a1b9d6010b247ca2b234bcb89</sys_update_name><sys_updated_by>byron.payton@admin</sys_updated_by><sys_updated_on>2020-12-27 15:17:37</sys_updated_on><sys_user_role display_value="data_lookup_admin" name="data_lookup_admin">d329c9b0a7002000dada192bd9acf463</sys_user_role><transaction_id/></sys_security_acl_role></record_update>]]></payload>
+        <payload_hash>-1312723419</payload_hash>
+        <record_name>u_dl_assignment_email.data_lookup_admin</record_name>
+        <reverted_from/>
+        <source>5887d1711bd160104db032af034bcb94</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-27 15:17:37</sys_created_on>
+        <sys_id>e5c9b15a1b9d6010b247ca2b234bcb8c</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>176a4c6c1320000001</sys_recorded_at>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-27 15:17:37</sys_updated_on>
+        <type>Access Roles</type>
+        <update_guid>edc9b15ae29d6010833fd1e13223808b</update_guid>
+        <update_guid_history>edc9b15ae29d6010833fd1e13223808b:-1312723419</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="u_dl_assignment_email.data_lookup_admin">e56af95a1b9d6010b247ca2b234bcbae</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-27 15:20:21</sys_created_on>
+        <sys_db_object display_value="" name="sys_security_acl_role">sys_security_acl_role</sys_db_object>
+        <sys_id>0cb1227c2c064b2e8425575fbae2a784</sys_id>
+        <sys_metadata>21c9b15a1b9d6010b247ca2b234bcb89</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>u_dl_assignment_email.data_lookup_admin</sys_name>
+        <sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package>
+        <sys_parent display_value="">21c9b15a1b9d6010b247ca2b234bcb85</sys_parent>
+        <sys_policy/>
+        <sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope>
+        <sys_scope_delete display_value="">2e7c715caf214bd792375629f1bf0d51</sys_scope_delete>
+        <sys_update_name>sys_security_acl_role_21c9b15a1b9d6010b247ca2b234bcb89</sys_update_name>
+        <sys_update_version display_value="sys_security_acl_role_21c9b15a1b9d6010b247ca2b234bcb89">e5c9b15a1b9d6010b247ca2b234bcb8c</sys_update_version>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-27 15:20:21</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

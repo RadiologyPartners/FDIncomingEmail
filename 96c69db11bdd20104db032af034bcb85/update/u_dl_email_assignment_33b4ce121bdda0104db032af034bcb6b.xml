@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="u_dl_email_assignment">
+    <u_dl_email_assignment action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <order>8300</order>
+        <sys_class_name>u_dl_email_assignment</sys_class_name>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-27 16:06:16</sys_created_on>
+        <sys_id>33b4ce121bdda0104db032af034bcb6b</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>8300</sys_name>
+        <sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope>
+        <sys_update_name>u_dl_email_assignment_33b4ce121bdda0104db032af034bcb6b</sys_update_name>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-29 14:05:16</sys_updated_on>
+        <u_assigned_to/>
+        <u_assignment_group display_value="RAI - Support" name="RAI - Support">59f48471dbeb5c50c4cb161913961977</u_assignment_group>
+        <u_recipient>rai_helpdesk@radpartners.com,helpdesk@4rai.com,+RAI@service-now.com</u_recipient>
+    </u_dl_email_assignment>
+</record_update>

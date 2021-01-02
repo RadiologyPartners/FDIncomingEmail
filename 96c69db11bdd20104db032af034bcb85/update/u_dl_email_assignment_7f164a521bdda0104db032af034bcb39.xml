@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="u_dl_email_assignment">
+    <u_dl_email_assignment action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <order>9999</order>
+        <sys_class_name>u_dl_email_assignment</sys_class_name>
+        <sys_created_by>byron.payton@admin</sys_created_by>
+        <sys_created_on>2020-12-27 16:11:34</sys_created_on>
+        <sys_id>7f164a521bdda0104db032af034bcb39</sys_id>
+        <sys_mod_count>7</sys_mod_count>
+        <sys_name>9999</sys_name>
+        <sys_package display_value="Flow Designer - Incoming Email" source="96c69db11bdd20104db032af034bcb85">96c69db11bdd20104db032af034bcb85</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Flow Designer - Incoming Email">96c69db11bdd20104db032af034bcb85</sys_scope>
+        <sys_update_name>u_dl_email_assignment_7f164a521bdda0104db032af034bcb39</sys_update_name>
+        <sys_updated_by>byron.payton@admin</sys_updated_by>
+        <sys_updated_on>2020-12-29 16:12:35</sys_updated_on>
+        <u_assigned_to/>
+        <u_assignment_group display_value="IT-SUPPORT-RP" name="IT-SUPPORT-RP">f6b3bfe7db17c810790cf158bf9619a6</u_assignment_group>
+        <u_recipient>DEFAULT ASSIGNMENT GROUP</u_recipient>
+    </u_dl_email_assignment>
+</record_update>
